@@ -12,5 +12,6 @@ def rank_candidates(profiles, required_skills):
         profile["score"] = score
         ranked.append(profile)
 
+    # Sort profiles by score in descending order
     ranked.sort(key=lambda x: x["score"], reverse=True)
     return ranked

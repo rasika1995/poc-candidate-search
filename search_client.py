@@ -10,7 +10,7 @@ async def main():
             {
                 "skills": ["Node.js", "React"],
                 "location": "Sri Lanka",
-                "limit": 10
+                "offset": 10
             }
         )
 
@@ -21,24 +21,43 @@ async def main():
 
         # Handle both data and content
         if tool_result.data is not None:
-            for i, candidate in enumerate(tool_result.data, start=1):
+            # Extract profiles and pagination
+            profiles = tool_result.data.get("profiles", [])
+            pagination = tool_result.data.get("pagination", {})
+
+            # Display profiles
+            for i, candidate in enumerate(profiles, start=1):
                 print(f"{i}. {candidate['name']}")
                 print(f"   LinkedIn: {candidate['linkedin_url']}")
                 print(f"   Score: {candidate['score']}")
                 print(f"   Snippet: {candidate['snippet']}")
                 print("-------------------------------")
+
+            # Display pagination details
+            print("Pagination Details:")
+            for key, value in pagination.items():
+                print(f"   {key}: {value}")
         else:
             for content in tool_result.content:
                 if hasattr(content, 'text'):
                     try:
                         # Attempt to parse the text as JSON
                         structured_data = json.loads(content.text)
-                        for i, candidate in enumerate(structured_data, start=1):
+                        profiles = structured_data.get("profiles", [])
+                        pagination = structured_data.get("pagination", {})
+
+                        # Display profiles
+                        for i, candidate in enumerate(profiles, start=1):
                             print(f"{i}. {candidate['name']}")
                             print(f"   LinkedIn: {candidate['linkedin_url']}")
                             print(f"   Score: {candidate['score']}")
                             print(f"   Snippet: {candidate['snippet']}")
                             print("-------------------------------")
+
+                        # Display pagination details
+                        print("Pagination Details:")
+                        for key, value in pagination.items():
+                            print(f"   {key}: {value}")
                     except json.JSONDecodeError:
                         print(f"Text result (unstructured): {content.text}")
 

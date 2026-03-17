@@ -1,4 +1,4 @@
-import requests
+from serpapi import GoogleSearch
 import os
 from dotenv import load_dotenv
 
@@ -6,27 +6,35 @@ load_dotenv()
 SERP_API_KEY = os.getenv("SERPAPI_KEY")
 
 
-def search_linkedin_profiles(skill: str, location: str = "", limit: int = 10):
+def search_linkedin_profiles(skill: str, location: str = "", offset: int = 0):
     """
     Fetch LinkedIn profiles dynamically using SerpAPI.
+    Only offset is provided to determine the starting point of results.
     """
     query = f'site:linkedin.com/in "{skill}" {location}'
+    profiles = []
+    pagination = {}
+
     params = {
         "engine": "google",
         "q": query,
+        "location": location,
         "api_key": SERP_API_KEY,
-        "num": limit
+        "start": offset  # Pagination offset
     }
 
-    response = requests.get("https://serpapi.com/search.json", params=params)
-    data = response.json()
+    search = GoogleSearch(params)
+    results = search.get_dict()
 
-    profiles = []
-    for result in data.get("organic_results", [])[:limit]:
+    # Extract profiles
+    for result in results.get("organic_results", []):
         profiles.append({
             "name": result.get("title"),
             "linkedin_url": result.get("link"),
             "snippet": result.get("snippet")
         })
 
-    return profiles
+    # Extract pagination details
+    pagination = results.get("pagination", {})
+
+    return {"profiles": profiles, "pagination": pagination}
