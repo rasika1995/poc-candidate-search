@@ -32,7 +32,7 @@ Follow these steps to set up the project after cloning:
 
 5. **Run the client:**
    ```bash
-   python search_client.py
+   python client.py --skills "Python,Django,FastAPI" --location "San Francisco" --experience "5 years" --position "Backend Engineer" --limit 10 --page 1
    ```
 
 Make sure you have Python 3.12 installed on your system.
