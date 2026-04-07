@@ -1,4 +1,4 @@
-from serpapi import GoogleSearch
+import serpapi
 import os
 from typing import List, Dict, Any
 from dotenv import load_dotenv
@@ -40,6 +40,8 @@ def search_linkedin_profiles(
     limit: int = 10
 ) -> Dict[str, Any]:
 
+    client = serpapi.Client(api_key=SERP_API_KEY)
+
     query = _build_linkedin_query(skills, location, experience, position)
 
     start = (page - 1) * limit
@@ -49,10 +51,13 @@ def search_linkedin_profiles(
         "q": query,
         "location": location,
         "api_key": SERP_API_KEY,
-        "start": start
+        "start": start,
+        "output": "json",
     }
 
-    search = GoogleSearch(params)
+    client = serpapi.Client(api_key=os.getenv("API_KEY"))
+
+    search = client.search(params)
     results = search.get_dict()
 
     profiles = []
