@@ -24,8 +24,8 @@ def _build_linkedin_query(
     if experience:
         terms.append(f'"{experience}"')
 
-    if location:
-        terms.append(f'"{location}"')
+    # if location:
+    #     terms.append(f'"{location}"')
 
     # Force Google to return LinkedIn profiles
     return f'site:linkedin.com/in {" ".join(terms)}'
@@ -49,16 +49,14 @@ def search_linkedin_profiles(
     params = {
         "engine": "google",
         "q": query,
-        "location": location,
+        # "location": location,
         "api_key": SERP_API_KEY,
         "start": start,
         "output": "json",
     }
 
-    client = serpapi.Client(api_key=os.getenv("API_KEY"))
-
     search = client.search(params)
-    results = search.get_dict()
+    results = search
 
     profiles = []
 
